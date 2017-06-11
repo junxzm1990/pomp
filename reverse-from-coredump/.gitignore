@@ -1,0 +1,65 @@
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+
+# Swap files
+*.swp
+
+# Own executable
+src/reverse
+
+# Too big file
+testsuites/pscp/core
+testsuites/coreutils/core
+testsuites/uniq/core
+testsuites/join/core
+testsuites/gdb/core
+
+# Temp file in configure/make
+Makefile
+src/Makefile
+config.h
+config.log
+config.status
+src/.deps/
+stamp-h1
+autom4te.cache
+aclocal.m4
+configure
+depcomp
+Makefile.in
+src/Makefile.in
+compile
+config.h.in
+install-sh
+missing

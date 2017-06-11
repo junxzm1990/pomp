@@ -1,0 +1,58 @@
+# reverse-from-coredump
+Reverse Execution From CoreDump
+
+## Prerequirement
+
+### libelf/libdisasm
+
+    $ sudo apt-get install libelf1 libelf-dev
+
+library to read and write ELF files
+
+~~$ sudo apt-get install libdisasm0 libdisasm-dev~~
+
+~~disassembler library for x86 code~~
+
+### custome-tailor libdisasm
+
+Now we use custome-tailor [libdisasm](https://github.com/junxzm1990/libdsiasm). The corresponding installation process is as follows:
+
+```sh
+cd libdsiasm
+./configure
+make
+sudo make install
+
+sudo ldconfig
+```
+
+### autoconf/automake
+
+    $ sudo apt-get install autoconf automake
+
+## Building
+
+```
+$ ./autogen.sh
+$ ./configure
+$ make
+```
+
+## Usage
+
+    $ ./src/reverse coredump binary_path inversed_instruction_trace
+
+**Make sure binary file and all the library files are in the binary path**
+
+### Test
+
+```
+$ ./src/reverse testsuites/latex2rtf/core testsuites/library/ testsuites/latex2rtf/inst.reverse
+```
+
+### Clean
+
+```
+$ make clean
+$ make distclean
+```
