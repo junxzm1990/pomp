@@ -11,11 +11,17 @@ We are currently working on organizing documents and test cases.
 For more detials about POMP, please refer to 
 
 @inproceedings {203880,
+
 title = {Postmortem Program Analysis with Hardware-Enhanced Post-Crash Artifacts},
+
 booktitle = {26th USENIX Security Symposium (USENIX Security 17)},
+
 year = {2017},
+
 address = {Vancouver, BC},
+
 url = {https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/xu-jun},
+
 publisher = {USENIX Association},
 }
 
