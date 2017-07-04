@@ -20,3 +20,28 @@ unsigned long countvalidaddress(char *filename){
     LOG(stdout, "RESULT: Valid Address Number - 0x%lx\n", linenum);
     return linenum;
 }
+
+
+#ifdef DATA_LOGGED
+
+//count the number of instructions that have valid data logging
+unsigned long countvalidlog(char * filename){
+	char line[256];
+	FILE *file;
+	unsigned long linenum;
+
+	if((file = fopen(filename, "r")) == NULL){
+		LOG(stderr, "ERROR: cannot open file containing data log\n");
+		return -1;
+	}
+
+	linenum = 0;
+	while(fgets(line, sizeof(line), file) != NULL){
+		linenum++;
+	}
+
+	LOG(stdout, "RESULT: Valid Address Number - 0x%lx\n", linenum);
+	return linenum;
+}
+#endif
+

@@ -74,8 +74,6 @@ bool alias_between_two_targets(re_list_t *entry, re_list_t *target){
 
 	int index;  
 
-	assert(check_next_unknown_write(&re_ds.head, entry, target));
-
 	if(!resolve_alias(target, entry))
 		return true;
 
@@ -87,9 +85,6 @@ bool obstacle_between_two_targets(re_list_t *listhead, re_list_t* entry, re_list
 	if(!check_next_unknown_write(listhead, entry, target))
 		return false; 
 	
-	if(!re_ds.resolving)
-		return true; 
-
   	return alias_between_two_targets(entry, target);	
 } 
 
@@ -195,7 +190,8 @@ bool re_alias_resolve(re_list_t* exp1, re_list_t* exp2){
 
 //exp2 is the expression with known address
 
-	address = exp2->node_type == UseNode ?  CAST2_USE(exp2->node)->address : CAST2_DEF(exp2->node)->address + re_ds.alias_offset; 
+	address = exp2->node_type == UseNode ?  CAST2_USE(exp2->node)->address : CAST2_DEF(exp2->node)->address;
+	address += re_ds.alias_offset; 
 
 	assert(address);
 
@@ -313,8 +309,6 @@ static void save_re_ds(re_t *oldre) {
 static void restore_re_ds(re_t *oldre) {
 	memcpy(&re_ds, oldre, sizeof(re_t));
 
-	LOG(stdout, "LOG: recursive count = %d\n", re_ds.rec_count);
-
 	REPLACE_HEAD((&oldre->head.list), (&re_ds.head.list));
 
 	REPLACE_HEAD((&oldre->head.umemlist), (&re_ds.head.umemlist));
@@ -323,7 +317,6 @@ static void restore_re_ds(re_t *oldre) {
 
 void inc_rec_count(){
 	re_ds.rec_count++;
-	LOG(stdout, "LOG: recursive count = %d\n", re_ds.rec_count);
 }
 
 
@@ -332,6 +325,45 @@ bool check_alias_pair(re_list_t* exp1, re_list_t* exp2){
 	re_t oldre; 
 	re_list_t *aexp1, *aexp2;
 	int retval;
+
+	if(exp2->node_type == UseNode && CAST2_USE(exp2->node)->address >= 0x804b650 && CAST2_USE(exp2->node)->address <= 0x804b66f)
+		return false; 	
+
+
+//heuristic here
+#ifdef BIN_ALIAS
+//this pair has been proved to be not alias
+	if(search_pair(&re_ds.atroot, exp2->id, exp1->id))
+		return false; 	
+#endif
+
+
+	printf("Current inst id is %d, source is %d and target is %d\n", re_ds.curinstid, find_inst_of_node(exp2)->id, find_inst_of_node(exp1)->id );
+
+	if(find_inst_of_node(exp1)->id > re_ds.curinstid
+		|| find_inst_of_node(exp2)->id > re_ds.curinstid)
+		return true;
+
+#ifdef WITH_SOLVER
+	//check if the alias assumption violates the constraint system
+	//take this as a fast path for alias check
+	// if the constraint system tells non-alias, then quickly return...
+
+	Z3_lbool aliascst1, aliascst2; 
+
+	aliascst2 = check_alias_by_constraint(exp1, exp2, true, re_ds.alias_offset);
+
+	if(aliascst2 == Z3_L_FALSE){
+		return false; 
+	}
+#endif
+
+#ifdef BIN_ALIAS
+	if(!bin_alias_check(exp1, exp2))
+		return false;
+#endif
+
+
 	
 //store the re_ds structure 
 //this must be done before any alias resolving
@@ -349,14 +381,10 @@ bool check_alias_pair(re_list_t* exp1, re_list_t* exp2){
 			inc_rec_count();
 
 			if (re_ds.rec_count == REC_LIMIT) {
-				LOG(stdout, "LOG: Recursive count is enough\n");
 				longjmp(re_ds.aliasret, 2);
 			}
 
 			re_alias_resolve(aexp1, aexp2);
-			
-//			if(!re_ds.resolving)
-//				continue_exe_with_alias();
 
 			//destroy the copied mainlist 
 			delete_corelist(&re_ds.head);
@@ -405,9 +433,35 @@ bool resolve_alias(re_list_t* exp, re_list_t *target){
 			if(!re_ds.resolving)
 				return false;
 
+//if these two cannot alias based on their constraints,then we can directly return
+//take this as a cache based optimization
+
 			if(check_alias_pair(entry, exp)){
+				
+				if(re_ds.rec_count == 0){
+					printf("**************************** One pair of aliases cannot be resolved ****************************\n");
+					print_instnode(find_inst_of_node(entry)->node);
+					print_instnode(find_inst_of_node(exp)->node);
+					printf("**************************** End of resolving one pair of aliases ****************************\n");
+				}
+
 				return false; 
 			}
+#ifdef BIN_ALIAS				
+			else{
+
+				if(re_ds.rec_count == 0)
+					insert_pair(&re_ds.atroot, exp->id, entry->id);	
+			}
+#endif
+
+#ifdef WITH_SOLVER
+				//add the constraints that they are not alias
+			if(!re_ds.rec_count){
+				add_address_constraint(entry, exp, false, re_ds.alias_offset); 
+			}
+#endif
+
 		}
 	}
 	return true; 
@@ -429,10 +483,6 @@ void continue_exe_with_alias() {
 		if (!curinst) {
 			assert(0);
 		}
-/*
-		LOG(stdout, "\n------------Start of one instruction assumption analysis------------\n");
-		print_instnode(curinst->node);
-*/
 
 		int handler_index = insttype_to_index(re_ds.instlist[index].type);
 		if (handler_index >= 0) {
@@ -440,11 +490,7 @@ void continue_exe_with_alias() {
 		} else {
 			assert(0);
 		}
-/*
-		LOG(stdout, "-------------End of one instruction assumption analysis-------------\n");
-*/
 
 	}
 	LOG(stdout, "Return from continue_exe_with_alias\n");
-	//assert("continue to the end of trace" && 0);
 }

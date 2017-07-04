@@ -11,6 +11,7 @@
 #define MOVD 0x08
 #define PSHUFD 0x09
 #define PUNPCKLBW 0x0A
+#define PTEST 0x0B
 
 #define BADINST -1
 
@@ -26,7 +27,8 @@ static string_kv insttable[] = {
     {"movq", MOVQ},
     {"movd", MOVD},
     {"pshufd", PSHUFD},
-    {"punpcklbw", PUNPCKLBW}
+    {"punpcklbw", PUNPCKLBW},
+    {"ptest", PTEST}
 };
 
 #define NKEYS (sizeof(insttable)/sizeof(string_kv))
@@ -98,6 +100,10 @@ void unknown_handler(re_list_t * instnode){
 		case PUNPCKLBW:
 			punpcklbw_handler(instnode);
 			break;
+
+		case PTEST:
+			ptest_handler(instnode);
+			break;
 /*
 		case BADINST:
 			LOG(stdout, "Warning: bad instruction\n");
@@ -112,9 +118,6 @@ void unknown_handler(re_list_t * instnode){
 
 void unknown_resolver(re_list_t* instnode, re_list_t *re_deflist, re_list_t *re_uselist){
 
-
-	
-	LOG(stdout, " ====== Unknown resovler is invoked\n");
 
 	x86_insn_t* inst;
 	inst = re_ds.instlist + CAST2_INST(instnode->node)->inst_index;
@@ -163,6 +166,9 @@ void unknown_resolver(re_list_t* instnode, re_list_t *re_deflist, re_list_t *re_
 			punpcklbw_resolver(instnode, re_deflist, re_uselist);
 			break;
 
+		case PTEST:
+			ptest_resolver(instnode, re_deflist, re_uselist);
+			break;
 		default:
 			assert(0);
 			break;	

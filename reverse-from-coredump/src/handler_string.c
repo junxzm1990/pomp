@@ -24,8 +24,8 @@ static bool resolve_df(re_list_t *instnode) {
 void strsca_handler(re_list_t *instnode) {
 
 	x86_insn_t* inst;
-	x86_op_t *src, *dst, *imp, *esiop;
-	x86_op_t esi, edi;
+	x86_op_t *src, *dst, *imp, *ediop;
+	x86_op_t edi;
 	re_list_t re_deflist, re_uselist, re_instlist;  	
 	re_list_t *def, *usesrc, *defcount, *usecount;
 	valset_u tempval; 
@@ -47,6 +47,7 @@ void strsca_handler(re_list_t *instnode) {
 
 	// ecx
 	defcount = add_new_define(imp);
+	usecount = add_new_use(imp, Opd);
 
 	/*
 	// set ecx after value to 0
@@ -55,13 +56,11 @@ void strsca_handler(re_list_t *instnode) {
 	add_to_deflist(defcount, &re_deflist);
 	*/
 
-	INIT_REGOPD(&esi, op_register, op_dword, op_read, src->data.expression.base);
-	esiop = add_new_implicit_operand(inst, &esi);
+	INIT_REGOPD(&edi, op_register, op_dword, op_read, src->data.expression.base);
+	ediop = add_new_implicit_operand(inst, &edi);
 
-	add_new_define(esiop);
-	add_new_use(esiop, Opd);
-
-	usecount = add_new_use(imp, Opd);
+	add_new_define(ediop);
+	add_new_use(ediop, Opd);
 
 	add_to_instlist(instnode, &re_instlist);
 	re_resolve(&re_deflist, &re_uselist, &re_instlist);
@@ -73,8 +72,8 @@ void strsca_handler(re_list_t *instnode) {
 void strcmp_handler(re_list_t *instnode){
 
 	x86_insn_t* inst;
-	x86_op_t *src, *dst, *imp, *esiop;
-	x86_op_t esi, edi;
+	x86_op_t *src, *dst, *imp, *ediop, *esiop;
+	x86_op_t edi, esi;
 	re_list_t re_deflist, re_uselist, re_instlist;  	
 	re_list_t *def, *usesrc, *defcount, *usecount;
 	valset_u tempval; 
@@ -101,6 +100,7 @@ void strcmp_handler(re_list_t *instnode){
 
 	// ecx
 	defcount = add_new_define(imp);
+	usecount = add_new_use(imp, Opd);
 
 	/*
 	// set ecx after value to 0
@@ -109,13 +109,17 @@ void strcmp_handler(re_list_t *instnode){
 	add_to_deflist(defcount, &re_deflist);
 	*/
 
+	INIT_REGOPD(&edi, op_register, op_dword, op_read, dst->data.expression.base);
+	ediop = add_new_implicit_operand(inst, &edi);
+
 	INIT_REGOPD(&esi, op_register, op_dword, op_read, src->data.expression.base);
 	esiop = add_new_implicit_operand(inst, &esi);
 
+	add_new_define(ediop);
+	add_new_use(ediop, Opd);
+
 	add_new_define(esiop);
 	add_new_use(esiop, Opd);
-
-	usecount = add_new_use(imp, Opd);
 
 	add_to_instlist(instnode, &re_instlist);
 	re_resolve(&re_deflist, &re_uselist, &re_instlist);
@@ -295,11 +299,14 @@ void strmov_handler(re_list_t *instnode){
 
 	// ecx
 	defcount = add_new_define(imp);
+	usecount = add_new_use(imp, Opd);
 
+	/*
 	// set ecx after value to 0
 	memset(&tempval, 0, sizeof(tempval));
 	assign_def_after_value(defcount, tempval);
 	add_to_deflist(defcount, &re_deflist);
+	*/
 
 	// edi = edi +/- 1/2/4 * ecx
 	INIT_REGOPD(&edi, op_register, op_dword, op_read, dst->data.expression.base);
@@ -314,9 +321,6 @@ void strmov_handler(re_list_t *instnode){
 
 	add_new_define(esiop);
 	add_new_use(esiop, Opd);
-
-	// esi / edi use one ecx use node
-	usecount = add_new_use(imp, Opd);
 
 	// [edi] , [esi]
 	def = add_new_define(dst);
@@ -395,25 +399,29 @@ void strstore_handler(re_list_t *instnode){
 	INIT_LIST_HEAD(&re_uselist.uselist);
 	INIT_LIST_HEAD(&re_instlist.instlist);	
 
+
+//mov [edi], eax
+//inc edi
+//dec ecx
+
+//define and use ecx
 	defcount = add_new_define(imp);
+	usecount = add_new_use(imp, Opd);
 
-	// set ecx after value to 0
-	memset(&tempval, 0, sizeof(tempval));
-	assign_def_after_value(defcount, tempval);
-	add_to_deflist(defcount, &re_deflist);
-
-	// edi = edi +/- 1/2/4 * eax
 	INIT_REGOPD(&edi, op_register, op_dword, op_read, dst->data.expression.base);
 	ediop = add_new_implicit_operand(inst, &edi);
 
+//define and use edi
 	add_new_define(ediop);
 	add_new_use(ediop, Opd);
 
-	usecount = add_new_use(imp, Opd);
 
-	// [edi], eax
+
+//define [edi]
 	def = add_new_define(dst);
 	split_expression_to_use(dst);
+
+//use eax
 	usesrc = add_new_use(src, Opd);
 
 	add_to_instlist(instnode, &re_instlist);
@@ -428,8 +436,186 @@ void translate_handler(re_list_t *instnode){
 }
 
 
+void strsca_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist){
+	re_list_t *entry;
+	re_list_t *dst[NOPD], *src[NOPD];
+	int nuse, ndef, i;
+	valset_u vt1, vt;
+	bool df;
+	size_t size;
+	x86_insn_t *instruction;
+
+	instruction = re_ds.instlist + CAST2_INST(inst->node)->inst_index;	
+
+	traverse_inst_operand(inst, src, dst,re_uselist, re_deflist, &nuse, &ndef);	
+
+	assert(nuse == 2 && ndef == 2);
+
+	df = resolve_df(inst);
+
+	size = translate_datatype_to_byte(x86_get_dest_operand(instruction)->datatype);
+
+	// ecx-- | ecx++
+	if (CAST2_USE(src[0]->node)->val_known 
+		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)) {
+		
+		vt1 = CAST2_USE(src[0]->node)->val;
+		vt.dword = vt1.dword - 1;
+		assert_val(dst[0], vt, false);
+	}
+
+	if (!CAST2_USE(src[0]->node)->val_known 
+		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)) {
+		
+		vt1 = CAST2_DEF(dst[0]->node)->afterval;
+		vt.dword = vt1.dword + 1;
+
+		assign_use_value(src[0], vt);
+		add_to_uselist(src[0], re_uselist);
+	}
+
+	if (CAST2_USE(src[0]->node)->val_known 
+		&& !(CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)) {
+		
+		vt1 = CAST2_USE(src[0]->node)->val;
+		vt.dword = vt1.dword - 1;
+		
+		assign_def_after_value(dst[0], vt);
+		add_to_deflist(dst[0], re_deflist);
+	}
+
+	// edi+=1/2/4 | edi-=1/2/4
+	if (CAST2_USE(src[1]->node)->val_known 
+		&& (CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[1]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+		assert_val(dst[1], vt, false);
+	}
+
+	if (!CAST2_USE(src[1]->node)->val_known 
+		&& (CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_DEF(dst[1]->node)->afterval;
+		vt.dword = (df)?(vt1.dword + size):(vt1.dword - size);
+
+		assign_use_value(src[1], vt);
+		add_to_uselist(src[1], re_uselist);
+	}
+
+	if (CAST2_USE(src[1]->node)->val_known 
+		&& !(CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[1]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+
+		assign_def_after_value(dst[1], vt);
+		add_to_deflist(dst[1], re_deflist);
+	}
+}
+
+
 void strcmp_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist){
-	assert(0);
+	re_list_t *entry;
+	re_list_t *dst[NOPD], *src[NOPD];
+	int nuse, ndef, i;
+	valset_u vt1, vt2, vt;
+	bool df;
+	size_t size;
+	x86_insn_t *instruction;
+
+	instruction = re_ds.instlist + CAST2_INST(inst->node)->inst_index;	
+
+	if (strcmp(instruction->mnemonic, "scas") == 0) {
+		strsca_resolver(inst, re_deflist, re_uselist);
+		return;
+	}
+
+	traverse_inst_operand(inst, src, dst,re_uselist, re_deflist, &nuse, &ndef);	
+
+	assert(nuse == 3 && ndef == 3);
+
+	df = resolve_df(inst);
+
+	size = translate_datatype_to_byte(x86_get_dest_operand(instruction)->datatype);
+
+	// ecx-- | ecx++
+	if (CAST2_USE(src[0]->node)->val_known 
+		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)) {
+		
+		vt1 = CAST2_USE(src[0]->node)->val;
+		vt.dword = vt1.dword - 1;
+		assert_val(dst[0], vt, false);
+	}
+
+	if (!CAST2_USE(src[0]->node)->val_known 
+		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)) {
+		
+		vt1 = CAST2_DEF(dst[0]->node)->afterval;
+		vt.dword = vt1.dword + 1;
+
+		assign_use_value(src[0], vt);
+		add_to_uselist(src[0], re_uselist);
+	}
+
+	if (CAST2_USE(src[0]->node)->val_known 
+		&& !(CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)) {
+		
+		vt1 = CAST2_USE(src[0]->node)->val;
+		vt.dword = vt1.dword - 1;
+		
+		assign_def_after_value(dst[0], vt);
+		add_to_deflist(dst[0], re_deflist);
+	}
+
+	// edi+=1/2/4 | edi-=1/2/4
+	if (CAST2_USE(src[1]->node)->val_known 
+		&& (CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[1]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+		assert_val(dst[1], vt, false);
+	}
+
+	if (!CAST2_USE(src[1]->node)->val_known 
+		&& (CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_DEF(dst[1]->node)->afterval;
+		vt.dword = (df)?(vt1.dword + size):(vt1.dword - size);
+
+		assign_use_value(src[1], vt);
+		add_to_uselist(src[1], re_uselist);
+	}
+
+	if (CAST2_USE(src[1]->node)->val_known 
+		&& !(CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[1]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+
+		assign_def_after_value(dst[1], vt);
+		add_to_deflist(dst[1], re_deflist);
+	}	
+
+	// esi+=1/2/4 | esi-=1/2/4
+	if (CAST2_USE(src[2]->node)->val_known 
+		&& (CAST2_DEF(dst[2]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[2]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+		assert_val(dst[2], vt, false);
+	}
+
+	if (!CAST2_USE(src[2]->node)->val_known 
+		&& (CAST2_DEF(dst[2]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_DEF(dst[2]->node)->afterval;
+		vt.dword = (df)?(vt1.dword + size):(vt1.dword - size);
+
+		assign_use_value(src[2], vt);
+		add_to_uselist(src[2], re_uselist);
+	}
+
+	if (CAST2_USE(src[2]->node)->val_known 
+		&& !(CAST2_DEF(dst[2]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[2]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+
+		assign_def_after_value(dst[2], vt);
+		add_to_deflist(dst[2], re_deflist);
+	}
 }
 
 
@@ -647,8 +833,9 @@ void strmov_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_useli
 	re_list_t *entry;
 	re_list_t *dst[NOPD], *src[NOPD];
 	int nuse, ndef, i;
-	valset_u vs1, vs2, vt;
+	valset_u vt1, vt2, vt;
 	bool df;
+	size_t size;
 
 	instruction = re_ds.instlist + CAST2_INST(inst->node)->inst_index;	
 
@@ -663,21 +850,114 @@ void strmov_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_useli
 
 	df = resolve_df(inst);
 
+	size = translate_datatype_to_byte(CAST2_USE(src[1]->node)->operand->datatype);
+
 	// ecx known, ds:[esi] known, es:[edi] known
 	// how to define def node / use node for continuous memory
 	// Just separate continuous memory into several entries by its datatype
 	
-	// ecx before value is known
-	if (CAST2_DEF(dst[0]->node)->val_stat & BeforeKnown) {
-		if (df) {
-			LOG(stdout, "ALERT: [edi - (ecx..0)] <= [esi - (ecx..0)]\n");
-			// implement me later
-			assert(0);
-		} else {
-			LOG(stdout, "ALERT: [edi + (ecx..0)] <= [esi + (ecx..0)]\n");
-			// implement me later
-			assert(0);
-		}
+	// ecx-- | ecx++
+	if (CAST2_USE(src[0]->node)->val_known 
+		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)) {
+		
+		vt1 = CAST2_USE(src[0]->node)->val;
+		vt.dword = vt1.dword - 1;
+		assert_val(dst[0], vt, false);
+	}
+
+	if (!CAST2_USE(src[0]->node)->val_known 
+		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)) {
+		
+		vt1 = CAST2_DEF(dst[0]->node)->afterval;
+		vt.dword = vt1.dword + 1;
+
+		assign_use_value(src[0], vt);
+		add_to_uselist(src[0], re_uselist);
+	}
+
+	if (CAST2_USE(src[0]->node)->val_known 
+		&& !(CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)) {
+		
+		vt1 = CAST2_USE(src[0]->node)->val;
+		vt.dword = vt1.dword - 1;
+		
+		assign_def_after_value(dst[0], vt);
+		add_to_deflist(dst[0], re_deflist);
+	}
+
+	// edi+=1/2/4 | edi-=1/2/4
+	if (CAST2_USE(src[1]->node)->val_known 
+		&& (CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[1]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+		assert_val(dst[1], vt, false);
+	}
+
+	if (!CAST2_USE(src[1]->node)->val_known 
+		&& (CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_DEF(dst[1]->node)->afterval;
+		vt.dword = (df)?(vt1.dword + size):(vt1.dword - size);
+
+		assign_use_value(src[1], vt);
+		add_to_uselist(src[1], re_uselist);
+	}
+
+	if (CAST2_USE(src[1]->node)->val_known 
+		&& !(CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[1]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+
+		assign_def_after_value(dst[1], vt);
+		add_to_deflist(dst[1], re_deflist);
+	}
+
+	// esi+=1/2/4 | esi-=1/2/4
+	if (CAST2_USE(src[2]->node)->val_known 
+		&& (CAST2_DEF(dst[2]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[2]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+		assert_val(dst[2], vt, false);
+	}
+
+	if (!CAST2_USE(src[2]->node)->val_known 
+		&& (CAST2_DEF(dst[2]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_DEF(dst[2]->node)->afterval;
+		vt.dword = (df)?(vt1.dword + size):(vt1.dword - size);
+
+		assign_use_value(src[2], vt);
+		add_to_uselist(src[2], re_uselist);
+	}
+
+	if (CAST2_USE(src[2]->node)->val_known 
+		&& !(CAST2_DEF(dst[2]->node)->val_stat & AfterKnown)) {
+		vt1 = CAST2_USE(src[2]->node)->val;
+		vt.dword = (df)?(vt1.dword - size):(vt1.dword + size);
+
+		assign_def_after_value(dst[2], vt);
+		add_to_deflist(dst[2], re_deflist);
+	}
+
+	// [edi] = [esi]
+	if (CAST2_USE(src[3]->node)->val_known 
+		&& (CAST2_DEF(dst[3]->node)->val_stat & AfterKnown)) {
+		vt = CAST2_USE(src[3]->node)->val;
+		assert_val(dst[3], vt, false);
+	}
+
+	if (!CAST2_USE(src[3]->node)->val_known 
+		&& (CAST2_DEF(dst[3]->node)->val_stat & AfterKnown)) {
+		vt = CAST2_DEF(dst[3]->node)->afterval;
+
+		assign_use_value(src[3], vt);
+		add_to_uselist(src[3], re_uselist);
+	}
+
+	if (CAST2_USE(src[3]->node)->val_known 
+		&& !(CAST2_DEF(dst[3]->node)->val_stat & AfterKnown)) {
+		vt = CAST2_USE(src[3]->node)->val;
+
+		assign_def_after_value(dst[3], vt);
+		add_to_deflist(dst[3], re_deflist);
 	}
 }
 
@@ -751,14 +1031,18 @@ void stos_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist
 	}
 }
 
-
+//mov [edi], eax
+//inc edi
+//dec ecx
+// def 0 ecx, def 1 edi, def 2 [edi]
+// use 0 ecx, use 1, edi, use 3, eax
 void strstore_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist){
 
 	x86_insn_t *instruction;
 	re_list_t *entry;
 	re_list_t *dst[NOPD], *src[NOPD];
 	int nuse, ndef, i;
-	valset_u vs1, vs2, vt;
+	valset_u vs1, vs2, vs3, vt1, vt2, vt3;
 	bool df;
 
 	instruction = re_ds.instlist + CAST2_INST(inst->node)->inst_index;	
@@ -769,25 +1053,76 @@ void strstore_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_use
 	}
 
 	traverse_inst_operand(inst,src,dst,re_uselist, re_deflist, &nuse, &ndef);	
-
 	assert(nuse == 3 && ndef == 3);
-
+		
 	df = resolve_df(inst);	
+	//df determines incresing edi or decreasing edi	
+	if (df) {
+		LOG(stdout, "ALERT: [edi - (ecx..0)] <= eax\n");
+		assert(0);
+		return;
+	} 
 
-	// ecx known, eax, es:[edi] known
-	// how to define def node / use node for continuous memory
-	// Just separate continuous memory into several entries by its datatype
-	
-	// ecx before value is known
-	if (CAST2_DEF(dst[0]->node)->val_stat & BeforeKnown) {
-		if (df) {
-			LOG(stdout, "ALERT: [edi - (ecx..0)] <= eax\n");
-			// implement me later
-			assert(0);
-		} else {
-			LOG(stdout, "ALERT: [edi + (ecx..0)] <= eax\n");
-			// implement me later
-			assert(0);
+
+	//deal with ecx
+	if(CAST2_USE(src[0]->node)->val_known){
+		//decrease ecx
+		vs1 = CAST2_USE(src[0]->node)->val; 
+		vs1.dword--;
+
+		if(CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)
+			assert_val(dst[0], vs1, false);
+		else{
+			assign_def_after_value(dst[0], vs1);
+			add_to_deflist(dst[0], re_deflist);
+		}
+	}else{
+
+		if(CAST2_DEF(dst[0]->node)->val_stat & AfterKnown){
+			vt1 = CAST2_DEF(dst[0]->node)->afterval; 
+			vt1.dword++;
+			assign_use_value(src[0], vt1);
+			add_to_uselist(src[0], re_uselist);
+		}
+	}
+
+	//deal with edi
+	if(CAST2_USE(src[1]->node)->val_known){
+		vs2 = CAST2_USE(src[1]->node)->val; 
+		vs2.dword += translate_datatype_to_byte(CAST2_USE(src[2]->node)->operand->datatype);	
+
+		if(CAST2_DEF(dst[1]->node)->val_stat & AfterKnown)
+			assert_val(dst[1], vs2, false);
+		else{
+			assign_def_after_value(dst[1], vs2);
+			add_to_deflist(dst[1], re_deflist);
+		}
+		
+	}else{
+		if(CAST2_DEF(dst[1]->node)->val_stat & AfterKnown){
+			vt2 = CAST2_DEF(dst[1]->node)->afterval; 
+			vt2.dword -= translate_datatype_to_byte(CAST2_USE(src[2]->node)->operand->datatype);
+			assign_use_value(src[1], vt2);
+			add_to_uselist(src[1], re_uselist);
+		}
+	}
+
+	// mov [edi], eax
+	if(CAST2_USE(src[2]->node)->val_known){
+		vs3 = CAST2_USE(src[2]->node)->val; 
+
+		if(CAST2_DEF(dst[2]->node)->val_stat & AfterKnown)
+			assert_val(dst[2], vs3, false);
+		else{
+			assign_def_after_value(dst[2], vs3);
+			add_to_deflist(dst[2], re_deflist);
+		}
+		
+	}else{
+		if(CAST2_DEF(dst[2]->node)->val_stat & AfterKnown){
+			vt3 = CAST2_DEF(dst[2]->node)->afterval; 
+			assign_use_value(src[2], vt3);
+			add_to_uselist(src[2], re_uselist);
 		}
 	}
 }

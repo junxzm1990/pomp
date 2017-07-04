@@ -80,81 +80,65 @@ void jcc_handler(re_list_t *instnode){
 	inst = re_ds.instlist + CAST2_INST(instnode->node)->inst_index;
 
 	if (strcmp(inst->mnemonic, "ja") == 0){
-		LOG(stdout, " ****** JA handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jne") == 0){
-		LOG(stdout, " ****** JNE handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jnz") == 0){
-		LOG(stdout, " ****** JNZ handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jle") == 0){
-		LOG(stdout, " ****** JLE handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jz") == 0){
-		LOG(stdout, " ****** JZ handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jnc") == 0){
-		LOG(stdout, " ****** JNC handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jc") == 0){
-		LOG(stdout, " ****** JC handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jbe") == 0){
-		LOG(stdout, " ****** JBE handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jg") == 0){
-		LOG(stdout, " ****** JG handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jge") == 0){
-		LOG(stdout, " ****** JGE handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "js") == 0){
-		LOG(stdout, " ****** JS handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jns") == 0){
-		LOG(stdout, " ****** JNS handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jl") == 0){
-		LOG(stdout, " ****** JS handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jpe") == 0){
-		LOG(stdout, " ****** JPE handler encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jcxz") == 0){
-		LOG(stdout, " ****** JCXZ handler encountered\n");
 		return;
 	}
 
-	LOG(stdout, "Instruction opcode %s\n", inst->mnemonic);
 	assert(0);
 }
 
@@ -165,82 +149,66 @@ void jcc_resolver(re_list_t* instnode, re_list_t *re_deflist, re_list_t *re_usel
 	inst = re_ds.instlist + CAST2_INST(instnode->node)->inst_index;
 
 	if (strcmp(inst->mnemonic, "ja") == 0){
-		LOG(stdout, " ****** JA resolver encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jne") == 0){
-		LOG(stdout, " ****** JNE resolver encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jnz") == 0){
-		LOG(stdout, " ****** JNZ resolver encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jle") == 0){
-		LOG(stdout, " ****** JLE resolver encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jz") == 0){
-		LOG(stdout, " ****** JZ resolver encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jnc") == 0){
-		LOG(stdout, " ****** JNC resolver encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jc") == 0){
-		LOG(stdout, " ****** JC resolver encountered\n");
 		return;
 	}
 
 	if (strcmp(inst->mnemonic, "jbe") == 0){
-		LOG(stdout, " ****** JBE resolver encountered\n");
 		return;
 	}
 
         
         if (strcmp(inst->mnemonic, "jge") == 0){
-                LOG(stdout, " ****** JGE resolver encountered\n");
                 return;
         }
 
 	if (strcmp(inst->mnemonic, "js") == 0){
-                LOG(stdout, " ****** JS resolver encountered\n");
                 return;
         }
 	
 	if (strcmp(inst->mnemonic, "jns") == 0){
-                LOG(stdout, " ****** JNS resolver encountered\n");
                 return;
         }
 	
 	if (strcmp(inst->mnemonic, "jg") == 0){
-                LOG(stdout, " ****** JG resolver encountered\n");
                 return;
         }
 
 	if (strcmp(inst->mnemonic, "jl") == 0){
-                LOG(stdout, " ****** JL resolver encountered\n");
                 return;
         }
 
 	if (strcmp(inst->mnemonic, "jpe") == 0){
-                LOG(stdout, " ****** JPE resolver encountered\n");
                 return;
         }
 
 	if (strcmp(inst->mnemonic, "jcxz") == 0){
-		LOG(stdout, " ****** JCXZ resolver encountered\n");
 		return;
 	}
 
-	LOG(stdout, "Instruction opcode %s\n", inst->mnemonic);
 	assert(0);
 }
 
@@ -269,12 +237,14 @@ void call_handler(re_list_t *instnode){
 	INIT_ESPMEM(&espmem, op_expression, op_dword, op_write, esp);
 	dstopd = add_new_implicit_operand(inst, &espmem);
 
-	add_new_define(dstopd);
+	espmemdef = add_new_define(dstopd);
+
 	split_expression_to_use(dstopd);	
 
-	useeip = add_new_use(eip, Opd);
 	tempval.dword = inst->addr + inst->size;
-	assign_use_value(useeip, tempval);
+	assign_def_after_value(espmemdef, tempval);
+//	useeip = add_new_use(eip, Opd);
+//	assign_use_value(useeip, tempval);
 
 	defesp = add_new_define(esp);
 	// directly assign beforevalue here ?
@@ -392,9 +362,8 @@ void return_handler(re_list_t *instnode){
 	srcopd = add_new_implicit_operand(inst, &espmem);
 	
 	useret = add_new_use(srcopd, Opd);
-	add_new_use(srcopd, Base);
-
-
+	split_expression_to_use(srcopd);
+	
 //finish adding use
 
 	add_to_instlist(instnode, &re_instlist);
@@ -420,9 +389,10 @@ void call_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist
 
 	traverse_inst_operand(inst, src, dst,re_uselist, re_deflist, &nuse, &ndef);	
 
-	assert((nuse == 1 && ndef == 2) || (nuse == 2 && ndef == 2));
+	assert((nuse == 0 && ndef == 2) || (nuse == 1 && ndef == 2));
 
 	// eip = [esp] && eip is always known
+/*
 	if(CAST2_USE(src[0]->node)->val_known 
 		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)){
 		assert_val(src[0], CAST2_DEF(dst[0]->node)->afterval, false);
@@ -435,6 +405,7 @@ void call_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist
 		assign_def_after_value(dst[0], vt);
 		add_to_deflist(dst[0], re_deflist);
 	}
+*/
 
 	if(CAST2_DEF(dst[1]->node)->val_stat & AfterKnown){
 		vt = CAST2_DEF(dst[1]->node)->afterval; 
@@ -444,7 +415,7 @@ void call_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist
 			assert_val(dst[1], vt, true);
 		else{
 			assign_def_before_value(dst[1], vt);
-			add_to_deflist(dst[1], re_deflist);
+			add_to_deflist(dst[1], re_deflist);	
 		}
 	}
 
@@ -460,7 +431,7 @@ void call_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist
 		}
 	}
 
-	if (nuse == 1) return;
+	if (nuse == 0) return;
 
 	if (ADDRESS_SIZE == 32) {
 		vt.dword = previnst->addr;
@@ -468,9 +439,9 @@ void call_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist
 		assert(0);
 	}
 
-	if (!CAST2_USE(src[1]->node)->val_known) {
-		assign_use_value(src[1], vt);
-		add_to_uselist(src[1], re_uselist);
+	if (!CAST2_USE(src[0]->node)->val_known) {
+		assign_use_value(src[0], vt);
+		add_to_uselist(src[0], re_uselist);
 	}
 }
 

@@ -3,6 +3,13 @@
 #include "reverse_exe.h"
 
 
+void ptest_handler(re_list_t* instnode){
+	test_handler(instnode);
+}
+
+void ptest_resolver(re_list_t* inst, re_list_t* deflist, re_list_t* uselist){
+	test_resolver(inst, deflist, uselist);
+}
 
 void pxor_handler(re_list_t* instnode){
 
@@ -538,7 +545,7 @@ void pshufd_handler(re_list_t* instnode){
 	convert_offset_to_exp(dst);	
 
 	//	for debugginf use	
-	print_operand_info(inst->operand_count, dst, src);
+	print_operand_info(inst->operand_count, dst, src, imm);
 
 	INIT_LIST_HEAD(&re_deflist.deflist);
 	INIT_LIST_HEAD(&re_uselist.uselist);

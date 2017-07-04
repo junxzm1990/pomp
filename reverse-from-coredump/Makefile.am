@@ -4,78 +4,33 @@ dist_doc_DATA=README
 TESTSUITES_DIR = testsuites
 EXECUTABLE=$(SUBDIRS)/reverse
 
-abc2mtex:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
 aireplay-ng:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-binutils:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-corehttp:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-coreutils:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-inetutils:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-join:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-latex2rtf:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
 
 nasm:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
 
-php:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-pscp:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-python22:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-simple:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-stftp:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-uniq:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-gdb:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-openjpeg:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-podofo:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-0verkill:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
-
-jpegtoavi:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
+gas:
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
 
 gif2png:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
 
-unrtf:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
+unrar:
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
 
-unalz:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
+libpng:
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
 
-psutils:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
+libsmi:
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
 
-mcrypt:
-	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/library/ $(TESTSUITES_DIR)/$@/inst.reverse
+prozilla:
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
+
+ntpd:
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
+
+nullhttp:
+	$(EXECUTABLE) $(TESTSUITES_DIR)/$@/core $(TESTSUITES_DIR)/$@/libs/ $(TESTSUITES_DIR)/$@/inst.reverse $(TESTSUITES_DIR)/$@/reginfo.reverse $(TESTSUITES_DIR)/$@/xmm.log $(TESTSUITES_DIR)/$@/summary.lib
 

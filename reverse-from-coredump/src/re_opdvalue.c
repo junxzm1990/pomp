@@ -127,9 +127,8 @@ static int index_of_memseg(Elf32_Addr address) {
 
 
 static void *get_pointer_from_coremem(Elf32_Addr address) {
-	LOG(stdout, "LOG: get value from address - 0x%x\n", address);
+
 	int index = index_of_memseg(address);
-	LOG(stdout, "LOG: index of memseg is %d\n", index);
 
 	if (index == -1) {
 		LOG(stdout, "LOG: No such address\n");

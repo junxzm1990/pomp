@@ -9,6 +9,11 @@ extern char *core_path;
 extern char *bin_path;
 extern char *inst_path;
 
+#ifdef DATA_LOGGED
+extern char* log_path;
+extern char* xmm_path;
+#endif
+
 void set_core_path(char *path);
 char * get_core_path(void);
 
@@ -24,33 +29,19 @@ elf_core_info *get_core_info(void);
 void set_bin_info(elf_binary_info *binaryinfo);
 elf_binary_info *get_bin_info(void);
 
-
 unsigned long countvalidaddress(char *filename);
-/*
-int load_binlib(char *argv[]);
-Elf32_Addr get_gs_base_address(elf_core_info *core_info);
 
-//int malloc_new_memory(appphdr_data_t *mem);
-int index_in_appdata(appinst_t *appinst, Elf32_Addr address);
-void update_operands(appinst_t *appinst, inverse_function *inverse);
-Elf32_Addr get_address_from_expression(appinst_t *appinst, x86_ea_t expression);
-Elf32_Addr get_address_from_offset(x86_op_t *opd);
-unsigned char *get_pointer_from_address(appinst_t *appinst, Elf32_Addr address);
-unsigned int get_value_from_address(appinst_t *appinst, Elf32_Addr address, enum x86_op_datatype datatype);
-unsigned int get_value_from_expression(appinst_t *appinst, x86_op_t *opd);
-unsigned int get_value_from_immediate(appinst_t *appinst, x86_op_t *opd);
-unsigned int get_value_from_offset(appinst_t *appinst, x86_op_t *opd);
-unsigned int get_value_from_opd(appinst_t *appinst, x86_op_t *opd);
+#ifdef DATA_LOGGED
+void set_log_path(char * path);
+char* get_log_path(void);
+unsigned long countvalidlog(char *filename);
+void set_xmm_path(char * path);
+char* get_xmm_path(void);
+#endif
 
-void set_value_to_expression(appinst_t *appinst, x86_op_t *opd, unsigned int value);
-void set_value_to_opd(appinst_t *appinst, x86_op_t *opd, unsigned int value);
+#ifdef BIN_ALIAS
+extern char * sum_path;
+void set_sum_path(char* path);
+#endif
 
-unsigned int get_result_from_inst(appinst_t *appinst);
-
-unsigned int *check_exist_in_coredump(appdata_t *appdata, unsigned int value, unsigned char byte_num);
-int check_esp_is_unknown(appinst_t *appinst);
-Elf32_Addr search_retaddr_in_segment(appinst_t *appinst, Elf32_Addr retaddr);
-
-
-*/
 #endif

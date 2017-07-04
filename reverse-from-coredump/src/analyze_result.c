@@ -61,8 +61,8 @@ static void taint_operand(x86_op_t* opd){
 			if(entry != &node){
 				print_instnode(find_inst_of_node(entry)->node);
 				inst_tainted[CAST2_INST(find_inst_of_node(entry)->node)->inst_index] = 1;
-				//if the taint has reached the root cause, then stop it
-				// please check the root cause instruction and replace 927 with the line number 
+
+	
 				if(CAST2_INST(find_inst_of_node(entry)->node)->inst_index > 927) {
 					branch++;
 					goto endbranch;
@@ -100,6 +100,13 @@ static void taint_operand(x86_op_t* opd){
 					if(CAST2_USE(defsrc[i]->node)->operand->type == op_expression){ 
 
 						add_to_uselist(defsrc[i], &srclist);
+			
+						x86_insn_t* x86inst; 
+						x86inst = &re_ds.instlist[
+							CAST2_INST(find_inst_of_node(defsrc[i])->node)->inst_index];
+
+						if(strcmp(x86inst->mnemonic, "lea") == 0 )	
+							continue;
 
 						base = NULL;
 						index = NULL;

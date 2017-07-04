@@ -110,5 +110,7 @@
 #define get_bh_id() \
     (REG_BYTE_OFFSET + 7)
 
+#define H8_REG(id) \
+    (((id) >= REG_BYTE_OFFSET + 4) && ((id) <= REG_BYTE_OFFSET + 7))
 
 #endif

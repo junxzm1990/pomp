@@ -731,6 +731,9 @@ void print_instlist(re_list_t *re_instlist) {
 // This linked list is a global list
 void print_umemlist(re_list_t *re_umemlist) {
 	re_list_t *entry, *inst;
+	
+	unsigned umemnum = 0;
+
 	LOG(stdout, "=================================================\n");
 	LOG(stdout, "Item of umemlist:\n");
 	list_for_each_entry_reverse(entry, &re_umemlist->umemlist, umemlist){
@@ -747,8 +750,10 @@ void print_umemlist(re_list_t *re_umemlist) {
 		} else {
 			assert(0);
 		}
+		umemnum++;
+
 	}
-	LOG(stdout, "=================================================\n");
+	LOG(stdout, "%d unknown memory write=================================================\n", umemnum);
 }
 
 
@@ -786,8 +791,10 @@ void print_info_of_current_inst(re_list_t *inst){
 	list_for_each_entry_reverse(entry, &inst->list, list) {
 		LOG(stdout, "=================================================\n");
 		if (entry == &re_ds.head) break;
-		LOG(stdout, "LOG: Node ID is %d\n", entry->id);
 		if (entry->node_type == InstNode) break;
+
+		LOG(stdout, "LOG: Node ID is %d\n", entry->id);
+
 		if (entry->node_type == DefNode) {
 			print_defnode(CAST2_DEF(entry->node));
 		}
@@ -812,4 +819,10 @@ void log_instructions(x86_insn_t *instlist, unsigned instnum){
 		x86_format_insn(&instlist[i], inst_buf, MAX_INSN_STRING, intel_syntax);
 		fprintf(file, "0x%08x:\t%s\n", instlist[i].addr, inst_buf);
 	}
+}
+
+void print_maxfuncid() {
+	LOG(stdout, "=================================================\n");
+	LOG(stdout, "Max Function ID is %d\n", maxfuncid());
+	LOG(stdout, "=================================================\n");
 }

@@ -12,7 +12,6 @@ void mov_post_heuristics(re_list_t *instnode, re_list_t *instlist, re_list_t *us
 	val2addr_heuristics(uselist);	
 }
 
-
 void mov_handler(re_list_t *instnode){
 
 	x86_insn_t* inst;
@@ -95,6 +94,9 @@ void mov_handler(re_list_t *instnode){
 }
 
 
+
+
+
 void lea_handler(re_list_t *instnode){
 	
 	x86_insn_t* inst;
@@ -116,11 +118,33 @@ void lea_handler(re_list_t *instnode){
 	
 	// through resdeflist, we could link all the entry 
 	// needed to  be resolved together
+	
+//make use of base and index
+
 	switch(get_operand_combine(inst)){
 		case dest_register_src_expression:
+
 			def = add_new_define(dst);
-			usesrc = add_new_use(src, Opd);
-			split_expression_to_use(src);		
+//			usesrc = add_new_use(src, Opd);
+//			split_expression_to_use(src);		
+
+			//just add the use of base and index
+			switch (get_expreg_status(src->data.expression)) {
+				case No_Reg:
+					break;
+				case Base_Reg:
+					add_new_use(src, Base);	
+					break;
+				case Index_Reg:
+					add_new_use(src, Index);	
+					break;
+				case Base_Index_Reg:
+					add_new_use(src, Base);	
+					add_new_use(src, Index);	
+					break;
+				default: 
+					assert(0);
+			}
 			break;
 
 		default:
@@ -132,7 +156,6 @@ void lea_handler(re_list_t *instnode){
 
 	re_resolve(&re_deflist, &re_uselist, &re_instlist);
 }
-
 
 void movcc_handler(re_list_t *instnode){
 	x86_insn_t* inst;
@@ -260,6 +283,9 @@ void xchg_handler(re_list_t *instnode){
 
 void xchgcc_handler(re_list_t *instnode){
 
+
+	return; 
+
 	x86_insn_t* inst;
 	x86_op_t *eax, *dstopd, *srcopd;
 	re_list_t re_deflist, re_uselist, re_instlist;  	
@@ -365,10 +391,8 @@ void mov_resolver(re_list_t* inst, re_list_t *deflist, re_list_t *uselist){
 	traverse_inst_operand(inst, src, dst, uselist, deflist, &nuse, &ndef);
 	
 	assert(nuse == 1 && ndef ==1);
-	//assert(CAST2_DEF(dst[0]->node)->operand->datatype == CAST2_USE(src[0]->node)->operand->datatype);
 
 	//add pre heuristics
-
 	if(CAST2_USE(src[0]->node)->val_known 
 		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)){
 		assert_val(src[0], CAST2_DEF(dst[0]->node)->afterval, false);
@@ -509,82 +533,99 @@ static bool verify_zero_address(re_list_t *exp) {
 }
 
 void lea_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist){
+
 	re_list_t *entry;
 	re_list_t *dst[NOPD], *src[NOPD];
 	int nuse, ndef;
 	valset_u  vt;
-	bool zeroaddr = false;
-	
-	traverse_inst_operand(inst, src, dst, re_uselist, re_deflist, &nuse, &ndef);
-	
-	assert(nuse == 1 && ndef ==1);
+	unsigned addr; 
+	int it; 
 
-	zeroaddr = verify_zero_address(src[0]);
+	addr = 0;
 
-	if((CAST2_USE(src[0]->node)->address || zeroaddr)
-		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)){
-		vt.dword = CAST2_USE(src[0]->node)->address;
+	//here we are taking the base and index as operands
+	obtain_inst_elements(inst, src, dst, &nuse, &ndef);
+	assert((nuse == 0 || nuse == 1 || nuse == 2) && ndef ==1);
+
+	if (nuse == 0) {
+		unsigned long index = CAST2_INST(inst->node)->inst_index;
+		x86_op_t *opd = x86_get_src_operand(re_ds.instlist + index);
+		addr += opd->data.expression.disp;
+
+		assert(addr);
+	} else {
+		for(it = 0; it< nuse; it++){
+			if(!CAST2_USE(src[it]->node)->val_known){	
+				addr = 0;
+				break; 
+			}
+
+			if(CAST2_USE(src[it]->node)->usetype == Base)
+				addr += CAST2_USE(src[it]->node)->val.dword;
+
+			if(CAST2_USE(src[it]->node)->usetype == Index)
+				addr += CAST2_USE(src[it]->node)->val.dword * 
+					CAST2_USE(src[it]->node)->operand
+					->data.expression.scale;
+		}	
+		if (addr) 
+			addr += CAST2_USE(src[0]->node)->operand->data.expression.disp;		
+	}
+
+	if(addr && (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)){
+		vt.dword = addr;
 		assert_val(dst[0], vt, false);
 	}
 
-	if((CAST2_USE(src[0]->node)->address || zeroaddr)
-		&& !(CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)){
+	if(addr	&& !(CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)){
 		if (CAST2_DEF(dst[0]->node)->operand->datatype == op_dword) {
-			vt.dword = CAST2_USE(src[0]->node)->address;
+			vt.dword = addr;
 			assign_def_after_value(dst[0], vt);
 			add_to_deflist(dst[0], re_deflist);
-		} else {
-			assert(0);
-		}
+		} else assert(0);
 	} 
+	
+	//the address is unknown, but the destination is known 
+	//we will try to do the recovery
+	if(!addr && (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)){
+		re_list_t* base; 
+		re_list_t* index; 
+		
+		base = NULL;
+		index = NULL;
 
-	if(!(CAST2_USE(src[0]->node)->address || zeroaddr)
-		&& (CAST2_DEF(dst[0]->node)->val_stat & AfterKnown)){
+		for(it = 0; it < nuse; it++){
+			if(CAST2_USE(src[it]->node)->usetype == Base)
+				base = src[it];
+			
+			if(CAST2_USE(src[it]->node)->usetype == Index)
+				index = src[it];
+		}
 
-		vt = CAST2_DEF(dst[0]->node)->afterval;
-		CAST2_USE(src[0]->node)->address = vt.dword;
-		// infer base/index register value from the address
+		//baseaddr = addr - disp
+		if(base && !index){
+			vt.dword = CAST2_DEF(dst[0]->node)->afterval.dword - CAST2_USE(src[0]->node)->operand->data.expression.disp;
+			assign_use_value(base, vt);
+			add_to_uselist(base, re_uselist);
+		}
 
-		re_list_t *index, *base;
-		x86_op_t *opd = CAST2_USE(src[0]->node)->operand;
-		int temp;
+		if(!base && index){
+		/*
+			vt.dword = CAST2_DEF(dst[0]->node)->afterval.dword - CAST2_USE(src[0]->node)->operand->data.expression.disp;
+			vt.dword /= CAST2_USE(src[0]->node)->operand->data.expression.scale;
+			assign_use_value(index, vt);
+			add_to_uselist(index, re_uselist);
+		*/
+		}
 
-		get_element_of_exp(src[0], &index, &base);
-		switch (exp_addr_status(base, index)) {
-			case UBase:
-				vt.dword = CAST2_USE(src[0]->node)->address - 
-					   opd->data.expression.disp;
-				assign_use_value(base, vt);
-				add_to_uselist(base, re_uselist);
-				break;
-			case UBaseUIndex:
-				if (opd->data.expression.index.id == opd->data.expression.base.id) {
-					vt.dword = CAST2_USE(src[0]->node)->address - 
-						opd->data.expression.disp;
-
-					vt.dword /= (1 + opd->data.expression.scale);
-					assign_use_value(base, vt);
-					add_to_uselist(base, re_uselist);
-				}
-				break;
-			case KBaseUIndex:
-				temp = CAST2_USE(src[0]->node)->address - CAST2_USE(base->node)->val.dword - opd->data.expression.disp;
-				vt.dword = temp / (opd->data.expression.scale);
-				assign_use_value(index, vt);
-				add_to_uselist(index, re_uselist);
-				break;
-			case UBaseKIndex:
-				vt.dword = CAST2_USE(src[0]->node)->address - 
-					CAST2_USE(index->node)->val.dword * opd->data.expression.scale - 
-					opd->data.expression.disp;
-				assign_use_value(base, vt);
-				add_to_uselist(base, re_uselist);
-				break;
-			default:
-				assert(0);
-				return; 
-		} 
+		if(base && index){
+			// if lea ebx, [eax + eax]
+			// also be resolved
+		}
+	
+	
 	}
+
 }
 
 void movcc_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist){
@@ -707,6 +748,8 @@ void xchg_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist
 
 
 void xchgcc_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist){
+
+	return;
 
 	re_list_t *dst[NOPD], *src[NOPD];
 	int nuse, ndef;

@@ -92,11 +92,105 @@ coredata_t * load_coredump(elf_core_info *core_info, elf_binary_info *binary_inf
 		core_info->note_info->core_thread.threads_context[threadnum].xmm_reg, 
 		32*(sizeof (long)));
 
+#ifdef DATA_LOGGED
+	{
+		FILE *file; 
+		if(file = fopen(get_xmm_path(), "r")){
+			fread(coredata->corereg.xmm_reg, sizeof(long), 32, file);
+		}	
+	}
+#endif
+
 	coredata->corereg.gs_base = 
 		core_info->note_info->core_thread.lts[threadnum].lts_info[0].base;
 
 	return coredata;
 }
+
+#ifdef DATA_LOGGED 
+#define LOG_MAX_SIZE 256
+#define REGDEM ";"
+#define INFODEM ":"
+
+
+static void process_log_line(char* line, operand_val_t * oplog){
+
+	char *str1, *str2, *saveptr1, *saveptr2; 
+	char *token, *regid, *regval;
+	char *endptr;  
+	int regcount; 
+
+	int vallen; 
+	int i, j;
+	
+	for(regcount = 0, str1 = line; ;regcount++, str1 = NULL){
+		token = strtok_r(str1, REGDEM, &saveptr1);
+		if(token == NULL)
+			break; 	
+			
+		regid = strtok_r(token, INFODEM, &saveptr2);
+		assert(regid != NULL);
+		regval = strtok_r(NULL, INFODEM, &saveptr2);
+		assert(regval != NULL);
+
+		//process the id and the value 
+		oplog->regs[regcount].reg_num = strtol(regid, &endptr, 10);
+
+		//conver the string to value
+		//as the length of the string is varying, 
+		//we use iterations instead of strtol 
+		
+		if(regval[strlen(regval)-1] == '\n')
+			regval[strlen(regval)-1] = 0;
+		
+		for(i = strlen(regval) - 2, j = 0; i >=2; i -= 2, j++){
+			char temp[5];
+			temp[0] = '0';
+			temp[1] = 'x';
+			temp[4] = '\0';
+			memcpy(&temp[2], &regval[i], 2);
+			((char*)&oplog->regs[regcount].val)[j] = (char)strtol(temp, &endptr, 16);
+		}
+	}
+	oplog->regnum = regcount;
+}
+
+unsigned long load_log(char* log_path, operand_val_t *oploglist){
+
+	unsigned index;
+	char log_buf[LOG_MAX_SIZE];
+
+	FILE* file; 
+
+
+	if((file = fopen(log_path, "r")) == NULL){
+		LOG(stderr, "ERROR: Cannot open file for log data\n");
+		return -1;
+	}
+
+	index = 0;
+
+
+	memset(log_buf, 0, LOG_MAX_SIZE);
+	
+	while(fgets(log_buf, sizeof(log_buf), file) != 0){
+
+		if(strncmp(log_buf, "noreg", 5) == 0){
+			oploglist[index].regnum = 0;
+			memset(oploglist[index].regs, 0, sizeof(oploglist[index].regs));
+		}else{
+			//process this line to get the tokens
+			process_log_line(log_buf, &oploglist[index]);
+		}
+
+		index++;
+		memset(log_buf, 0, LOG_MAX_SIZE);
+	}
+}
+
+
+#endif
+
 
 unsigned long load_trace(elf_core_info* core_info, elf_binary_info * binary_info, char *trace_file, x86_insn_t *instlist){
 
@@ -124,6 +218,9 @@ unsigned long load_trace(elf_core_info* core_info, elf_binary_info * binary_info
         // strtol return unsigned long.
         // So if input is bigger than 0x80000000, it will return 0x7fffffff
         address = (Elf32_Addr)strtoll(line, NULL, 16);
+
+	printf("The address of the current instruction is %s or %x\n", line, address);	
+
         offset = get_offset_from_address(core_info, address);
 
         if (offset == ME_NMAP || offset == ME_NMEM) {
@@ -143,12 +240,6 @@ unsigned long load_trace(elf_core_info* core_info, elf_binary_info * binary_info
             LOG(stderr, "ERROR: The PC points to an error position\n");
             return -1;
         }
-#if 0
-	char line1[64];
-        x86_format_insn(instlist+i, line1, 64, intel_syntax); 
-
-	printf("%s\n", line1);
-#endif
 
 	instlist[i++].addr = address;	
     }

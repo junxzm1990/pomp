@@ -328,6 +328,7 @@ void pshufd_handler(re_list_t* instnode);
 
 void punpcklbw_handler(re_list_t* instnode);
 
+void ptest_handler(re_list_t* instnode);
 
 
 //instruction resolver
@@ -485,6 +486,8 @@ void pshufd_resolver(re_list_t* inst, re_list_t *deflist, re_list_t *uselist);
 void punpcklbw_resolver(re_list_t* inst, re_list_t *deflist, re_list_t *uselist);
 
 void movlpd_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist);
+
+void ptest_resolver(re_list_t* inst, re_list_t *re_deflist, re_list_t *re_uselist);
 
 
 // post heuristics functions

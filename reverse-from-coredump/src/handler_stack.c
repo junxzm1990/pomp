@@ -101,8 +101,8 @@ void pop_handler(re_list_t *instnode){
 	srcopd = add_new_implicit_operand(inst, &espmem);
 
 	add_new_use(srcopd, Opd);
-	add_new_use(srcopd, Base);
-
+	split_expression_to_use(srcopd);
+	
 	add_to_instlist(instnode, &re_instlist);
 
 	re_resolve(&re_deflist, &re_uselist, &re_instlist);
@@ -321,7 +321,7 @@ void leave_handler(re_list_t *instnode){
 	srcopd = add_new_implicit_operand(inst, &espmem);
 
 	add_new_use(srcopd, Opd);
-	add_new_use(srcopd, Base);
+	split_expression_to_use(srcopd);
 
 	// esp = ebp;
 	defesp = add_new_define(esp);

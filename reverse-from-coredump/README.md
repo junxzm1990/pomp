@@ -38,14 +38,14 @@ $ make
 
 ## Usage
 
-    $ ./src/reverse coredump binary_path inversed_instruction_trace
+    $ ./src/reverse coredump binary_path inversed_instruction_trace inverse_reginfo xmm_log summary_lib
 
 **Make sure binary file and all the library files are in the binary_path**
 
 ### Test
 
 ```
-$ ./src/reverse testsuites/latex2rtf/core testsuites/library/ testsuites/latex2rtf/inst.reverse
+$ ./src/reverse testsuites/latex2rtf/core testsuites/latex2rtf/ testsuites/latex2rtf/inst.reverse testsuites/latex2rtf/reginfo.reverse testsuites/latex2rtf/xmm.log testsuites/latex2rtf/summary.lib
 ```
 
 ### Clean
@@ -54,142 +54,3 @@ $ ./src/reverse testsuites/latex2rtf/core testsuites/library/ testsuites/latex2r
 $ make clean
 $ make distclean
 ```
-
-## Branch
-
-### master
-
-Keep stable functionability in this branch
-
-### test1
-
-Test alias resovler in this branch
-
-### debugging
-
-migrate some features from test1 and test here
-
-### Other branch
-
-The following branches are used for testcases:
-
-- coreutils
-- uniq
-- join
-- latex2rtf
-- stftp
-- inetutils
-- binutils
-- openjpeg
-- podofo
-- unalz
-- unrtf
-- psutils
-- poppler
-- mcrypt
-- putty
-- python22
-
-For other cases, like 0verkill, nasm, there is no separate branch, due to failure.
-
-### Testcases needed to test
-
-- corehttp
-- gif2png
-- store
-- gdb
-
-
-## Instructions Handler
-
-- [x] add
-- [x] sub
-- [x] mul
-- [x] div
-- [x] inc
-- [x] dec
-- [x] shl
-- [x] shr
-- [x] rol
-- [x] ror
-- [x] and
-- [x] or
-- [x] xor
-- [x] not
-- [x] neg
-- [x] return
-- [x] call
-- [x] jmp
-- [x] jcc
-- [x] push
-- [x] pop
-- [ ] pushregs
-- [ ] popregs
-- [ ] pushflags
-- [ ] popflags
-- [ ] enter
-- [x] leave
-- [x] test
-- [x] cmp
-- [x] mov
-- [x] lea
-- [x] movcc (Examples: setz)
-- [x] xchg
-- [x] xchgcc (Exmaples: cmpxchg)
-- [x] strcmp
-- [x] strload
-- [x] strmov
-- [x] strstore
-- [ ] translate
-- [x] bittest
-- [x] bitset
-- [x] bitclear
-- [x] cpuid
-- [x] nop
-
-## Instruction Resolver
-
-- [x] add
-- [x] sub
-- [x] mul
-- [x] div
-- [x] inc
-- [x] dec
-- [x] shl
-- [x] shr
-- [x] rol
-- [x] ror
-- [x] and
-- [x] or
-- [x] xor
-- [x] not
-- [x] neg
-- [x] return
-- [x] call
-- [x] jmp
-- [x] jcc
-- [x] push
-- [x] pop
-- [ ] pushregs
-- [ ] popregs
-- [ ] pushflags
-- [ ] popflags
-- [ ] enter
-- [x] leave
-- [x] test
-- [x] cmp
-- [x] mov
-- [x] lea
-- [x] movcc (Examples: setz)
-- [x] xchg
-- [x] xchgcc (Exmaples: cmpxchg)
-- [x] strcmp
-- [x] strload
-- [x] strmov
-- [x] strstore
-- [ ] translate
-- [x] bittest
-- [x] bitset
-- [x] bitclear
-- [x] cpuid
-- [x] nop

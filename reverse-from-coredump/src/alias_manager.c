@@ -25,8 +25,7 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 	
 		if(use->usetype != Opd){
 			if (use->val.dword != vt.dword) {
-				LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-				LOG(stdout, "LOG: conflict at index/base register\n");
+				assert(re_ds.rec_count);
 				longjmp(re_ds.aliasret, 1);
 			}
 			return true;
@@ -36,16 +35,14 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 
 			case op_byte:
 				if(use->val.byte != vt.byte) {
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-					LOG(stdout, "LOG: conflict at byte\n");
+					assert(re_ds.rec_count);
 					longjmp(re_ds.aliasret, 1);
 				}
 				break;
 
 			case op_word:		
 				if(use->val.word != vt.word) {
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-					LOG(stdout, "LOG: conflict at word\n");
+					assert(re_ds.rec_count);
 					longjmp(re_ds.aliasret, 1);
 				}
 				break;
@@ -53,10 +50,9 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 			case op_dword:
 				
 				if(use->val.dword != vt.dword) {
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-					LOG(stdout, "LOG: conflict at dword\n");
-					
-					assert(re_ds.rec_count);
+				
+					if(!re_ds.rec_count)	
+						assert(0);
 
 					longjmp(re_ds.aliasret, 1);
 				}
@@ -64,8 +60,6 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 						
 			case op_qword:
 				if (memcmp(use->val.qword, vt.qword, 2*sizeof(long))) {
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-					LOG(stdout, "LOG: conflict at dqword\n");
 
 					assert(re_ds.rec_count);
 
@@ -76,10 +70,9 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 			case op_dqword:
 				
 				if(memcmp(use->val.dqword, vt.dqword, 4*sizeof(long))){
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-					LOG(stdout, "LOG: conflict at dqword\n");
 
-					assert(re_ds.rec_count);
+					if(!re_ds.rec_count)
+						assert(0);
 
 					longjmp(re_ds.aliasret, 1);
 				}
@@ -98,26 +91,23 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 
 			case op_byte:
 				if(vd.byte != vt.byte) {
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-					LOG(stdout, "LOG: conflict at byte\n");
+					assert(re_ds.rec_count);
 					longjmp(re_ds.aliasret, 1);
 				}
 				break;
 
 			case op_word:		
 				if(vd.word != vt.word) {
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-					LOG(stdout, "LOG: conflict at word\n");
 					longjmp(re_ds.aliasret, 1);
 				}
 				break;
 
 			case op_dword:
 				if(vd.dword != vt.dword) {
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-					LOG(stdout, "LOG: conflict at dword\n");
-					
-					assert(re_ds.rec_count);
+						
+					//assert(re_ds.rec_count);
+					if(!re_ds.rec_count)
+						assert(0);						
 
 					longjmp(re_ds.aliasret, 1);
 				}
@@ -126,8 +116,6 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 			case op_qword:
 				if(memcmp((void*)vd.qword, (void*)vt.qword, sizeof(vd.qword))){
 
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-                                        LOG(stdout, "LOG: conflict at qword\n");
 
 					assert(re_ds.rec_count);
 
@@ -140,8 +128,6 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 			case op_dqword:
 				if(memcmp((void*)vd.dqword, (void*)vt.dqword, sizeof(vd.dqword))){
 
-					LOG(stdout, "!!!!!!!!!!!!!!!!!!!!!\n");
-                                        LOG(stdout, "LOG: conflict at dqword\n");
 
 					assert(re_ds.rec_count);
 
@@ -152,7 +138,6 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 
 
 			default:
-				LOG(stdout, "Data type is %d\n", def->operand->datatype);
 				assert(0);
 				return false; 
 		}
@@ -161,8 +146,6 @@ bool assert_val(re_list_t* node, valset_u vt, bool before){
 
 
 void assert_address() {
-	LOG(stdout, "LOG: !!!!!!!!!!!!!!!!!!!\n");
-	LOG(stdout, "LOG: conflict at invalid address\n");
 	longjmp(re_ds.aliasret, 1);
 }
 
@@ -373,3 +356,8 @@ bool ok_to_check_alias(re_list_t *exp) {
 
 	return true;
 }
+
+
+
+
+
