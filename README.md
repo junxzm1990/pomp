@@ -6,7 +6,9 @@ Repo for the source code of POMP. It consists of four major components:
 3. A customized Linux Kernel that supports Intel PT, under https://github.com/junxzm1990/pt.git
 4. A Intel PIN tool to simulate Intel PT (for machines without PT), under https://github.com/junxzm1990/intel-pin.git
 
-We are currently working on organizing documents and test cases. 
+We are currently working on organizing documents and test cases.
+
+**Note that our tool only supports 32 bit now.**
 
 For more detials about POMP, please refer to 
 

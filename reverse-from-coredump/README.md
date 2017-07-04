@@ -1,6 +1,8 @@
 # reverse-from-coredump
 Reverse Execution From CoreDump
 
+**Note that our tool only supports 32 bit now.**
+
 ## Prerequirement
 
 ### libelf / libdisasm
@@ -9,13 +11,9 @@ Reverse Execution From CoreDump
 
 library to read and write ELF files
 
-~~$ sudo apt-get install libdisasm0 libdisasm-dev~~
-
-~~disassembler library for x86 code~~
-
 ### custome-tailor libdisasm
 
-Now we use a custome-tailor [libdisasm](https://github.com/junxzm1990/libdsiasm). The corresponding installation process is as follows:
+We use a custome-tailor libdisasm. The corresponding installation process is as follows:
 
 ```sh
 cd libdsiasm
@@ -42,7 +40,7 @@ $ make
 
     $ ./src/reverse coredump binary_path inversed_instruction_trace
 
-**Make sure binary file and all the library files are in the binary path**
+**Make sure binary file and all the library files are in the binary_path**
 
 ### Test
 
