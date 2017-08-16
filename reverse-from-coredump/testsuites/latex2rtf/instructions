@@ -1,0 +1,543 @@
+0xb55c13c4:	ja	0xB55C13DD
+0xb55c13c1:	cmp	ecx, 0x30
+0xb55c13bd:	pxor	xmm0, xmm0
+0xb55c13ba:	and	ecx, 0x3F
+0xb55c13b8:	mov	ecx, edi
+0xb55c13b6:	xor	eax, eax
+0xb55c13b2:	mov	edi, [esp+0xC]
+0xb55c13b1:	push	edi
+0xb55c13b0:	push	esi
+0x08048c50:	jmp	[0x807807C]
+0x08063bb6:	call	0x08048C50
+0x08063bb3:	push	[ebp-0x14]
+0x08063bb0:	sub	esp, 0x0C
+0x08063bad:	add	esp, 0x10
+0xb55ca0b9:	ret	
+0xb55ca0b8:	pop	edi
+0xb55ca0b6:	mov	eax, edi
+0xb55ca0b3:	mov	[edx], ax
+0xb55ca0b0:	mov	ax, [ecx]
+0xb55ca003:	jnz	0xB55CA0B0
+0xb55ca001:	test	al, 0x02
+0xb55c9ffb:	jnz	0xB55CA0A0
+0xb55c9ff9:	test	al, 0x01
+0xb55c9ff7:	jz	0xB55CA040
+0xb55c9ff5:	test	al, al
+0xb55c9ff4:	pop	ebx
+0xb55c9ff2:	add	ecx, ebx
+0xb55c9ff0:	add	edx, ebx
+0xb55c9fc5:	jnz	0xB55C9FF0
+0xb55c9fc2:	lea	ebx, [ebx+0x10]
+0xb55c9fc0:	test	eax, eax
+0xb55c9fbb:	movdqu	[edx-0x40], xmm4
+0xb55c9fb7:	pmovmskb	eax, xmm0
+0xb55c9fb3:	pcmpeqb	xmm0, xmm5
+0xb55c9fb1:	jnz	0xB55C9FF0
+0xb55c9faf:	test	eax, eax
+0xb55c9fab:	pmovmskb	eax, xmm0
+0xb55c9fa7:	pcmpeqb	xmm0, xmm4
+0xb55c9fa3:	pxor	xmm0, xmm0
+0xb55c9f9d:	sub	ebx, 0x000000A0
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f9b:	jz	0xB55C9F55
+0xb55c9f99:	test	eax, eax
+0xb55c9f96:	add	ecx, 0x40
+0xb55c9f93:	add	edx, 0x40
+0xb55c9f8f:	pmovmskb	eax, xmm0
+0xb55c9f8b:	pcmpeqb	xmm0, xmm3
+0xb55c9f87:	pminub	xmm3, xmm2
+0xb55c9f83:	pminub	xmm3, xmm7
+0xb55c9f7f:	movaps	xmm7, [ecx+0x30]
+0xb55c9f7a:	movdqu	[edx-0x10], xmm7
+0xb55c9f77:	movaps	xmm6, xmm3
+0xb55c9f72:	movdqu	[edx-0x20], xmm6
+0xb55c9f6e:	movaps	xmm3, [ecx+0x20]
+0xb55c9f6a:	pminub	xmm2, xmm5
+0xb55c9f66:	movaps	xmm5, [ecx+0x10]
+0xb55c9f61:	movdqu	[edx-0x30], xmm5
+0xb55c9f5d:	movdqa	xmm4, xmm2
+0xb55c9f5a:	movaps	xmm2, [ecx]
+0xb55c9f55:	movdqu	[edx-0x40], xmm4
+0xb55c9f53:	jnz	0xB55C9F9D
+0xb55c9f51:	test	eax, eax
+0xb55c9f4d:	pmovmskb	eax, xmm3
+0xb55c9f49:	pcmpeqb	xmm3, xmm0
+0xb55c9f45:	pminub	xmm3, xmm2
+0xb55c9f42:	add	edx, 0x40
+0xb55c9f3e:	pminub	xmm3, xmm7
+0xb55c9f3b:	add	ecx, 0x40
+0xb55c9f37:	pminub	xmm2, xmm5
+0xb55c9f33:	movaps	xmm7, [ecx+0x30]
+0xb55c9f30:	movaps	xmm6, xmm3
+0xb55c9f2c:	movaps	xmm3, [ecx+0x20]
+0xb55c9f28:	movaps	xmm5, [ecx+0x10]
+0xb55c9f25:	movaps	xmm4, xmm2
+0xb55c9f22:	movaps	xmm2, [ecx]
+0xb55c9f20:	sub	edx, eax
+0xb55c9f1e:	sub	eax, ecx
+0xb55c9f1b:	and	ecx, 0xC0
+0xb55c9f17:	lea	ecx, [ecx+ebx+0x10]
+0xb55c9f15:	mov	eax, ecx
+0xb55c9f10:	movdqu	[edx+ebx], xmm3
+0xb55c9f0a:	jnz	0xB55C9FF0
+0xb55c9f08:	test	eax, eax
+0xb55c9f05:	add	ebx, 0x10
+0xb55c9f01:	pmovmskb	eax, xmm0
+0xb55c9efd:	pcmpeqb	xmm0, xmm3
+0xb55c9ef8:	movdqu	[edx+ebx], xmm2
+0xb55c9ef3:	movaps	xmm3, [ecx+ebx+0x10]
+0xb55c9eed:	jnz	0xB55C9FF0
+0xb55c9eeb:	test	eax, eax
+0xb55c9ee8:	add	ebx, 0x10
+0xb55c9ee4:	pmovmskb	eax, xmm0
+0xb55c9ee0:	pcmpeqb	xmm0, xmm2
+0xb55c9edb:	movdqu	[edx+ebx], xmm1
+0xb55c9ed6:	movaps	xmm2, [ecx+ebx+0x10]
+0xb55c9ed0:	jnz	0xB55C9FF0
+0xb55c9ece:	test	eax, eax
+0xb55c9ecb:	add	ebx, 0x10
+0xb55c9ec7:	pmovmskb	eax, xmm0
+0xb55c9ec3:	pcmpeqb	xmm0, xmm1
+0xb55c9ebe:	movdqu	[edx+ebx], xmm4
+0xb55c9eb9:	movaps	xmm1, [ecx+ebx+0x10]
+0xb55c9eb3:	jnz	0xB55C9FF0
+0xb55c9eb1:	test	eax, eax
+0xb55c9eae:	add	ebx, 0x10
+0xb55c9eaa:	pmovmskb	eax, xmm0
+0xb55c9ea6:	pcmpeqb	xmm0, xmm4
+0xb55c9ea1:	movdqu	[edx+ebx], xmm3
+0xb55c9e9c:	movaps	xmm4, [ecx+ebx+0x10]
+0xb55c9e96:	jnz	0xB55C9FF0
+0xb55c9e94:	test	eax, eax
+0xb55c9e91:	add	ebx, 0x10
+0xb55c9e8d:	pmovmskb	eax, xmm0
+0xb55c9e89:	pcmpeqb	xmm0, xmm3
+0xb55c9e84:	movdqu	[edx+ebx], xmm2
+0xb55c9e7f:	movaps	xmm3, [ecx+ebx+0x10]
+0xb55c9e79:	jnz	0xB55C9FF0
+0xb55c9e77:	test	eax, eax
+0xb55c9e74:	add	ebx, 0x10
+0xb55c9e70:	pmovmskb	eax, xmm0
+0xb55c9e6c:	pcmpeqb	xmm0, xmm2
+0xb55c9e68:	movdqu	[edx], xmm1
+0xb55c9e64:	movaps	xmm2, [ecx+0x10]
+0xb55c9e60:	movdqa	xmm1, [ecx]
+0xb55c9e5d:	lea	esi, [esi+]
+0xb55c9e5b:	xor	ebx, ebx
+0xb55c9e59:	sub	edx, eax
+0xb55c9e57:	sub	eax, ecx
+0xb55c9e54:	and	ecx, 0xF0
+0xb55c9e51:	lea	ecx, [ecx+0x10]
+0xb55c9e4f:	mov	eax, ecx
+0xb55c9e49:	jnz	0xB55C9FF0
+0xb55c9e47:	test	eax, eax
+0xb55c9e45:	sub	ebx, ecx
+0xb55c9e41:	pmovmskb	eax, xmm0
+0xb55c9e3d:	pcmpeqb	xmm0, [ebx]
+0xb55c9e39:	movdqu	[edx], xmm1
+0xb55c9e35:	movdqu	xmm1, [ecx]
+0xb55c9e31:	pxor	xmm0, xmm0
+0xb55c9e2e:	and	ebx, 0xF0
+0xb55c9e2b:	lea	ebx, [ecx+0x10]
+0xb55c9e29:	mov	edi, edx
+0xb55c9e28:	push	ebx
+0xb55c9e27:	push	edi
+0xb55c9e21:	jz	0xB55CA350
+0xb55c9e1d:	cmp	[ecx+0xF], 0x00
+0xb55c9e17:	jz	0xB55CA330
+0xb55c9e13:	cmp	[ecx+0xE], 0x00
+0xb55c9e0d:	jz	0xB55CA310
+0xb55c9e09:	cmp	[ecx+0xD], 0x00
+0xb55c9e03:	jz	0xB55CA2F0
+0xb55c9dff:	cmp	[ecx+0xC], 0x00
+0xb55c9df9:	jz	0xB55CA2D0
+0xb55c9df5:	cmp	[ecx+0xB], 0x00
+0xb55c9def:	jz	0xB55CA2B0
+0xb55c9deb:	cmp	[ecx+0xA], 0x00
+0xb55c9de5:	jz	0xB55CA290
+0xb55c9de1:	cmp	[ecx+0x9], 0x00
+0xb55c9ddb:	jz	0xB55CA270
+0xb55c9dd7:	cmp	[ecx+0x8], 0x00
+0xb55c9dd1:	jz	0xB55CA260
+0xb55c9dcd:	cmp	[ecx+0x7], 0x00
+0xb55c9dc7:	jz	0xB55CA250
+0xb55c9dc3:	cmp	[ecx+0x6], 0x00
+0xb55c9dbd:	jz	0xB55CA240
+0xb55c9db9:	cmp	[ecx+0x5], 0x00
+0xb55c9db3:	jz	0xB55CA230
+0xb55c9daf:	cmp	[ecx+0x4], 0x00
+0xb55c9da9:	jz	0xB55CA220
+0xb55c9da5:	cmp	[ecx+0x3], 0x00
+0xb55c9d9f:	jz	0xB55CA210
+0xb55c9d9b:	cmp	[ecx+0x2], 0x00
+0xb55c9d95:	jz	0xB55CA200
+0xb55c9d91:	cmp	[ecx+0x1], 0x00
+0xb55c9d8b:	jz	0xB55CA1F0
+0xb55c9d88:	cmp	[ecx], 0x00
+0xb55c9d84:	mov	ecx, [esp+0x8]
+0xb55c9d80:	mov	edx, [esp+0x4]
+0x08048bc0:	jmp	[0x8078058]
+0x08063ba8:	call	0x08048BC0
+0x08063ba5:	push	[ebp-0x1C]
+0x08063ba2:	push	[ebp-0x14]
+0x08063b9f:	sub	esp, 0x08
