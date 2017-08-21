@@ -6,9 +6,13 @@ Repo for the source code of POMP. It consists of four major components:
 3. A customized Linux Kernel that supports Intel PT, under https://github.com/junxzm1990/pt.git
 4. A Intel PIN tool to simulate Intel PT (for machines without PT), under https://github.com/junxzm1990/intel-pin.git
 
-We are currently working on organizing documents and test cases.
+We are currently working on organizing documents and test cases. We have pushed two testcases for you to test the functionablity of our tool.
+
+We have two branches - master and intelpin. The former is for concrete Intel PT trace, but not easy to debug; The latter is for Intel Pin Logging trace, and easy to debug with all the intermediate results.
 
 **Note that our tool only supports 32 bit now.**
+
+If you need to port this tool to 64bit, you need spend time on changing libdisasm and all the interfaces and code related to libdisasm.
 
 For more detials about POMP, please refer to 
 
