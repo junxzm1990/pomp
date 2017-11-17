@@ -1,4 +1,7 @@
+**News, we are working on a stronger version of POMP. With a (we think) bug-free PT module and a reverse executor for long execution trace with significantly improvde efficiency**
+
 # POMP: Postmortem Program Analysis with Hardware-Enhanced Post-Crash Artifacts
+
 
 Repo for the source code of POMP. It consists of four major components: 
 1. Source code of POMP, under reverse-from-coredump/
