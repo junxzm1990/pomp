@@ -8,13 +8,13 @@ Repo for the source code of POMP. It consists of four major components:
 
 We are currently working on organizing documents and test cases. We have pushed two testcases for you to test the functionablity of our tool.
 
-We have two branches - master and intelpin. The former is for concrete Intel PT trace, but not easy to debug; The latter is for Intel Pin Logging trace, and easy to debug with all the intermediate results.
+We have two branches - master and intelpin. The former works with Intel PT trace, but not easy to debug; The latter can run with Intel Pin logging trace. It is easy to debug as our Pin tool provides all the intermediate results.
 
 **Note that our tool only supports 32 bit now.**
 
-If you need to port this tool to 64bit, you need spend time on changing libdisasm and all the interfaces and code related to libdisasm.
+If you need to port this tool to 64bit, you need to replace libdisasm and the interfaces related to libdisasm.
 
-For more detials about POMP, please refer to 
+For more details about POMP, please refer to 
 
 @inproceedings {203880, <br />
 title = {Postmortem Program Analysis with Hardware-Enhanced Post-Crash Artifacts},<br />
