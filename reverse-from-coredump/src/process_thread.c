@@ -58,6 +58,10 @@ int single_op_legal_access(x86_insn_t *insn, x86_op_t *opd, struct elf_prstatus 
 		if ((opd -> access & op_write) && (!address_writable(core_info, target))) {
 			legal = 0;
 		}
+		
+		if ((opd -> access & op_read) && (!address_readable(core_info, target))) {
+                        legal = 0;
+		}
 	}
 	return legal;
 }

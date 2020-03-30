@@ -189,6 +189,13 @@ int address_writable(elf_core_info* core_info, Elf32_Addr address){
         return (core_info->phdr[segment].p_flags & PF_W) ? 1:0;
 }
 
+int address_readable(elf_core_info* core_info, Elf32_Addr address){
+        int segment;
+        if((segment = address_segment(core_info, address))<0)
+                return 0;
+        return (core_info->phdr[segment].p_flags & PF_R) ? 1:0;
+}
+
 int addr_in_segment(GElf_Phdr phdr, Elf32_Addr addr){
 	if(addr >= phdr.p_vaddr && addr < phdr.p_vaddr + phdr.p_memsz)
 		return 1;
